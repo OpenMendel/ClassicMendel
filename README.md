@@ -2,11 +2,17 @@
 
 Official Classic Mendel Package Repository
 
-This is the official distribution of the legacy Mendel package, version 16. 
+This is the official distribution of the legacy Mendel package, version 16.0.  
 
 Mendel is a comprehensive package for the statistical analysis of qualitative and quantitative genetic traits. 
 
 ## Download
+
+- Linux: [Mendel-160_linux_intel_64.tar.gz](https://github.com/OpenMendel/ClassicMendel/raw/main/Mendel-160_linux_intel_64.tar.gz)
+- MacOS: [Mendel-160_Mac_Installer.dmg](https://github.com/OpenMendel/ClassicMendel/raw/main/Mendel-160_Mac_Installer.dmg)
+- Windows: [Mendel-160-win-setup.exe](https://github.com/OpenMendel/ClassicMendel/raw/main/Mendel-160-win-setup.exe)
+
+## Documentation
 
  
 ## Analysis options 
