@@ -2,7 +2,7 @@
 
 This is the official distribution of the legacy Mendel package, version 16.0.  
 
-Mendel is a comprehensive package for the statistical analysis of qualitative and quantitative genetic traits. 
+Mendel is a comprehensive package for the statistical analysis of qualitative and quantitative genetic traits. See below for the anaylsis options available.
 
 ## Download
 
