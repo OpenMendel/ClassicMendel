@@ -1,0 +1,580 @@
+
+ New Features in Mendel Version 16
+
+In version 16 of Mendel, the expiration date has been removed.
+Also, two new analysis options have been added, both quantitative
+versions of the Maternal-Fetal Genotype (MFG) incompatibility test.
+These are QMFG LRT (Analysis Option 30) that performs a Likelihood
+Ratio Test (LRT), and QMFG Score (Analysis Option 31) that uses the
+Score test instead of the LRT. The score test algorithm is much more
+efficient than the LRT, while the LRT is slightly more accurate.
+The QMFG Score Option can easily handle dense genome-wide SNP data sets.
+(There was no public version 15 of Mendel.)
+
+
+
+
+ New Features in Mendel Version 14
+
+The main change in this version of Mendel is faster computation in many
+of the analysis options, dramatically faster for GWAS (Analysis Option
+24), Ped-GWAS (Analysis Option 29), and Kinship Estimation (Analysis
+Option 10). This was predominantly obtained through parallelization. If
+desired, the user can limit or turn off this parallelization by setting
+the new keyword MAX_THREADS to the number of processors Mendel should
+use. The default is to use all available processors.
+
+In addition to making Ped-GWAS and Kinship Estimation much faster, they
+are also now much easier to use. For example, simply setting the value
+of the keyword KINSHIP_SOURCE in the control file determines if the
+global kinship coefficients are estimated via (1) only the explicit
+pedigree structures in the input file, (2) by comparing the SNP
+genotypes of pairs of individuals within pedigrees, which is the
+default, or (3) comparing the SNP genotypes of all pairs of individuals
+in the data set. If the kinship coefficients are set to be derived from
+SNP genotypes, the number of SNPs used can be set via the keyword
+SNP_SAMPLING_INCREMENT. The default value of 5 implies 20% of the SNPs
+are used; to use 100% of the SNPS, set this keyword to the value 1. The
+user can also trivially set overall minimum and maximum numbers of SNPS
+to use. Finally, the user can use the new keyword KINSHIP_METHOD to
+choose between the Method of Moments (MoM) and the Genetic Relationship
+Matrix (GRM) algorithms for converting SNP genotypes to global kinship
+coefficients. On a standard laptop computer the association analysis of
+1 million SNPs and 1000 related individuals often takes less than 90
+seconds and requires only about 1 GB of RAM.
+
+Many more minor additions are also included in this new version of
+Mendel. For example, the new keywords MIN_MAF and MAX_MAF allow one to
+easily set bounds on the minor allele frequencies of the SNPs allowed to
+be included in the analysis. Also, Pedigree Trimming (Option 21) has a
+new sub-option that simply combines all individuals into one pedigree,
+keeping all stated relationships intact.
+
+In the 14.x revisions of Mendel, Plink file importation was improved.
+A larger change is that the default penalty function used in
+penalized regression in GWAS (Analysis Option 24) was changed from
+the classic lasso to the minimax concave penalty (MCP). The MCP escapes
+the over shrinkage of the lasso, and thus should improve model selection
+by better avoiding false positives. To force Mendel to use the lasso
+penalty instead of MCP, set the new keyword LASSO_PENALTY to true.
+
+Also, Mendel now significantly simplifies and decreases the computation
+time for Ped-GWAS (Analysis Option 29) and Kinship Estimation
+(Analysis Option 10). For the Ped-GWAS Option, when you list several
+quantitative traits, each is analyzed separately, unless the new keyword
+MULTIVARIATE_ANALYSIS is set to true. This makes performing many
+univariate analyses much faster, since the data needs be initialized
+and the kinship coefficients estimated only once. Also, a new shorthand
+"all traits" can be used if all variables should be analyzed
+or a particular predictor should be used for all traits.
+
+
+
+
+ New Features in Mendel Version 13
+
+This new version has significantly expanded several existing options and
+add one entirely new analysis option. The new Ped-GWAS analysis option
+provides extremely fast GWAS analysis on extended pedigrees, nuclear
+families, unrelated individuals, or any combination thereof. It can
+handle univariate or multivariate quantitative traits with missing data,
+and allows for covariate adjustment, including correction for population
+stratification. Pedigree kinships can either be explicitly provided or
+automatically estimated from dense markers. SNPs can be analyzed under
+codominant (additive), dominant, or recessive models.
+
+The Ethnic Admixture analysis option has been expanded to rank markers
+by their informativeness to distinguish subpopulations. This option can
+now also perform very efficient principal component analysis (PCA).
+These two new features can be used with either text-based or binary data
+files.
+
+The Kinship analysis option has also been expanded to binary files. It
+can now quickly estimate SNP-based global and local kinship coefficients
+on dense genomewide data. It can also use the SNP-based global estimates
+to cluster individuals and thus construct pedigree groupings without
+pre-existing relationship information.
+
+The input data formats are now more flexible. For example, PLINK binary
+data sets (.fam, .bin, and .bed files) are now accepted (see the Mendel
+Documentation for details). The SNP definition file can now include
+allele names. Analogous to the SNP subset file, there is now a sample
+subset file to easily change which subset of individuals should be
+included in an analysis. Also, pedigree files without the twin field or
+without any pedigree fields can be read directly. These options are set
+using the new keyword INPUT_FORMAT.
+
+Many smaller improvements were also implemented. For example, missing
+SNP genotypes are now replaced with random ``average'' genotypes when
+missing data is not allowed in an analysis. Each selection of a random
+genotype is based on the allele frequencies within the data set. The
+GWAS output has been expanded and an issue with the Q-Q plot data is
+fixed. Also in the GWAS analysis option, one can now set specific values
+for the LASSO tuning constants using the command TUNING_CONSTANT, if one
+wishes to override Mendel's automatic adjustments. 
+
+In version 13.2 the analysis to rank markers by their informativeness
+to distinguish subpopulations, has been extended to allow non-uniform
+population contributions. There are also a few minor bug fixes and
+other improvements.
+
+
+
+
+ New Features in Mendel Version 12
+
+In this update we have added one new option, Trait Simulation,
+and improved several of the existing options. The new option uses either
+existing genotype data or the output of the genotype simulation option
+to determine trait values. The traits can be either univariate
+(simulated by generalized linear models) or multivariate
+(simulated by variance component models). Mean effects due to the
+genotypes at a major locus can be included in the model.
+The list of supported distributional families for the mean effects model
+is substantial (see Tables 14.1 and 14.2 in the Documentation).
+
+Genotype simulation now allows various output styles. In addition,
+one has considerable control over the degree of missing data
+for both trait and genotype simulation. This flexibility is accomplished
+with the introduction of four new keywords:: GENE_DROP_OUTPUT,
+KEEP_FOUNDER_GENOTYPES, MISSING_AT_RANDOM, and MISSING_DATA_PATTERN.
+
+Since a grand mean (intercept) is required for each trait
+in all of Mendel's regression analyses, it is now added automatically.
+Thus it is no longer necessary to add commands such as
+PREDICTOR = GRAND :: trait
+to your model. It does no harm if you continue to include such commands
+explicitly.
+
+An important change has been made to the meaning of the weight
+that can be assigned to each SNP in the SNP definition file.
+These predictor weights are used when building the best regression model
+that includes the user-specified number of predictors. A weight
+can now be any positive real number. Also, the greater the weight,
+the more likely the predictor will be included in the model.
+If the keyword UNIFORM_WEIGHTS has the value True, which is the default,
+then all predictors with unassigned weights receive weight 1.0.
+Otherwise, SNPs with unassigned weights receive weight 1/sqrt{4q(1-q)},
+where q is the minor allele frequency at the SNP.
+(If you previously included weights in your SNP definition files,
+we suggest you now use the inverse of the old weights.)
+
+Other minor changes include the maximum number of loci that can be
+combined into a superlocus has been increased from four to five.
+The keyword SEED can now be set to the special value TIME,
+which sets the seed based on the current time. The value set is
+reported in the standard output file.
+
+
+
+
+ New Features in Mendel Version 11
+
+This revision incorporates two new options and several improvements
+to existing options. The new options are Maternal-Fetal Genotype
+Incompatibility Testing and Inbred Strains Analysis. The first of the
+new options facilitates modeling of interactions between maternal and
+child genotypes. The classic example is Rh maternal-fetal incompatibility.
+The second of the new options represents a new approach to QTL mapping
+with inbred strains of mice and other animals. The option implements
+a mixed effects model that correctly captures polygenic background,
+handles multivariate traits, and copes with pedigrees of arbitrary complexity.
+The QTL effect is modeled at the mean level as a vector of regression
+coefficients on the strain origin pair (maternal-paternal) imputed
+for each animal at the current QTL location along the genome.
+
+To better deal with rare SNPs, the SNP Association option has been
+significantly improved. In an expanded version of the SNP Definition file,
+for each SNP one can now assign a weight and membership in a group
+of SNPs, e.g., a gene or molecular pathway. Default weights can be
+based on allele frequencies. The lasso regression can now use group penalties,
+which make it easier to understand association at the gene level rather
+than the SNP level. The new keyword LASSO_PROPORTION specifies the relative
+importance the model puts on individual predictors versus predictor groups.
+One may also specify individual predictors, or groups of predictors, to always
+retain in the LASSO model by using the keywords RETAINED_PREDICTOR and
+RETAINED_GROUP. Finally, in interaction testing, it is now possible
+to test for all pairwise interactions in a large base set of predictors.
+
+Among the modification of existing features, we have introduced a better
+facility for imposing linear constraints on parameters. See the discussion
+of the new keyword PARAMETER_EQUATION in the documentation. The deprecated,
+previous keywords PARAMETER_FIXED_VALUE and PARAMETER_EQUATE will continue
+to work for now.
+
+The SNP Imputation option now performs both pedigree based and linkage
+disequilibrium based genotype and haplotype inference. The combination
+of these two approaches leads to more accurate imputation results.
+Better imputation in turn leads to better handling of missing data
+and presumably more sensitive SNP association tests.
+
+
+
+
+
+ New Features in Mendel Version 10.0
+
+In this revision several analysis options have been expanded to add
+useful new features. For example, both SNP imputation and association
+testing now work on X-linked SNPs. The only caveat is that for SNP imputation,
+either all or none of the SNPs in each data set should be X-linked.
+SNP association testing of case-control data is now much faster, often more
+than five times faster. This is accomplished at the expense of calculating
+regression coefficients for only at least marginally significant SNPs.
+The cutoff p-value significance level can be set via the new keyword
+ESTIMATION_THRESHOLD, which has default value 0.001. Also, SNP association
+analysis can be performed under any of three dominance models: codominant
+(the default), first allele dominant, or first allele recessive.
+Alternatively, each SNP can automatically be analyzed under all three models,
+and the most significant result reported. The model is chosen by setting
+the new keyword SNP_DOMINANCE_MODEL to one of: Codominant, Dominant,
+Recessive, or Maximum.
+
+All high-density SNP based analyses now permit filtering the individuals and
+SNPs included in the analysis. Filtering is based on genotyping success rates.
+The minimum genotyping rates allowed for included individuals and
+SNPs are set via the new keywords MIN_SUCCESS_RATE_PER_INDIVIDUAL and
+MIN_SUCCESS_RATE_PER_SNP. Both keywords have default values 0.98.
+SNPs are filtered first and then individuals, based on the non-filtered SNPs.
+
+The NPL option has been expanded to allow the analysis of quantitative
+variables. The new Q-NPL statistic is discussed in the documentation.
+For the Location Score analysis option, the trait locus should now be named
+using the keyword AFFECTED_LOCUS_OR_FACTOR, and no longer need be included
+in the Map file. (Old files with the trait locus indicated by the first locus
+in the Map file will continue to work.) The positions analyzed outside
+the left and rightmost markers are now set using the new keywords
+FLANKING_DISTANCE and FLANKING_POINTS. In a change from past versions,
+the values of the keywords FLANKING_DISTANCE and GRID_INCREMENT
+now always have the same units as the distances in the Map file,
+which recall is set using the keyword MAP_DISTANCE_UNITS. Finally,
+for the location score option, a new example data set is added
+which illustrates the use of the simple PENETRANCE keyword
+to define a penetrance function.
+
+
+
+
+ New Features in Mendel Version 9.0
+
+Significant new analysis options have been added to Mendel to enable
+analysis of high-density, genome-wide SNP data. First, new data file
+formats are now used by Mendel to efficiently handle the possibly billions
+of genotypes in these data sets. The new file formats are discussed in
+Section 0.6 of the documentation. Standard, SNP-major PLINK binary pedigree
+files, so-called "bed" files, can now be used by Mendel. In addition, we
+allow for ordered SNP genotypes through the use of a coordinated SNP phase
+file. Conversions between comma-separated Mendel files and these new binary
+data files, in either direction, are performed by the new FILE_CONVERSION
+analysis option, which is discussed in Section 25 of the documentation.
+
+Two major new analysis options require these binary SNP data files as their
+input, SNP_IMPUTATION and SNP_ASSOCIATION. SNP imputation, as described in
+Section 23, fills in all missing SNP genotypes based predominantly on linkage
+disequilibrium (LD) considerations. This option can also impute all SNP
+haplotypes if requested.
+
+SNP association, as discussed in Section 24, tests for association
+between SNPs and a quantitative trait or a case-control disease status.
+This option performs both univariate SNP-by-SNP analysis and lasso penalized
+multivariate analysis. It will test for interactions among the most potent
+predictors. You can select this set of predictors or let Mendel do it for you.
+If you request higher-order interactions, please keep in mind that Mendel
+can be overwhelmed by the sheer number of interactions sought.
+
+Several additions have been made to the TRIM_PEDIGREES analysis option.
+Input data for this option can now come from binary SNP data files. In this
+case, the results are repackaged into new binary data files. Four new
+trimming models have also been introduced, for a total of nine. Each of the
+new models extracts specified individuals and puts them in new files as
+unrelateds.
+
+Hardy-Weinberg equilibrium testing can now be performed on pedigrees as
+part of allele frequency estimation; see the documentation for more
+details. There are also two new quantitative transformation functions,
+ABOVE_THRESHOLD and BELOW_THRESHOLD. In the transformed variable,
+ABOVE_THRESHOLD replaces all values at or above a user-specified threshold
+with 1, and all other non-missing values with 0. Use the new keyword
+INDICATOR_THRESHOLD to set the threshold value. BELOW_THRESHOLD does the same,
+but reverses the values receiving 0 or 1.
+
+For genotypes not listed in the penetrance file, or under control of
+penetrance commands in the control file, the default penetrance value is now 1.
+As always this can be changed using the keyword DEFAULT_PENETRANCE in the
+control file. Regardless of its default penetrance value, Mendel assigns
+a penetrance of 1 to each legal genotype of someone missing both a penetrance
+in the penetrance file and a phenotype at the locus.
+
+Finally, the map file is no longer necessary if all loci listed in the
+definition file should be included in the analysis, and should be treated
+as unlinked loci. The sole exception at this time is Location Score
+analysis, where the map file is still required since the first locus listed
+in the map file is mapped against all the other model loci.
+
+
+
+
+ New Features in Mendel Version 8.0
+
+Version 8.0 implements some major changes that users should bear carefully
+in mind. Most importantly, all input file format are by default now
+list-directed; thus, data values must be separated by commas, blanks, or
+tabs. To restore the previous default of column formatted files, simply set
+the keyword DEFAULT_LIST_READ to false in the control file. In
+list-directed pedigree files, recall that each person record begins with a
+pedigree name. In column formatted pedigree files, each pedigree is
+preceded by a pedigree record giving the number of people in the pedigree,
+the pedigree name, and optionally the number of copies of the pedigree. 
+These defaults can be overridden.
+
+Because later versions of Mendel will be geared to large SNP data sets, we
+no longer support the previously named SNP_FILE. This file was used to
+identify loci to be combined into super-loci. The corresponding Mendel
+option, Combining_SNPs, has been renamed Combining_Loci. In this option,
+you now designate the loci to be combined at the bottom of the definition
+file. The relevant syntax is similar to the syntax used to describe factors
+and variables in the definition file; see Section 0.5.5.4 in the
+documentation for details. As described in Section 18, it is also possible
+to designate successive super-loci by sliding a window of fixed width
+across the map file.
+
+Mendel now allows the map file to list each locus position rather than the
+genetic distances or recombination fractions between adjacent loci. When
+you use physical distance units of bp, Kb, or Mb, Mendel expects this new
+position style. See Section 0.5.6 for more details and example map files.
+
+Mendel now implements Cox's proportional hazards model in penetrance
+estimation. See Section 14.4 for more details. In gene dropping, Mendel
+will now randomly generate pedigrees with founder sources rather than
+allele names labeled in the pedigree output file.  Simply set the new
+keyword GENE_DROP_LABELS to true in the control file.  See Section 17.4 for
+an example.
+
+The remaining new features of Version 8.0 involve minor changes to the
+input files or their processing. For example, using keywords
+MISSING_QUANTITATIVE_VALUE and MISSING_VALUE instructs Mendel to interpret
+the assigned string as a missing value symbol for quantitative and
+non-quantitative fields, respectively. The string assigned to either
+keyword can be up to four characters long. When the pedigree file is in
+LINKAGE format, the default for MISSING_VALUE is "0", the zero character;
+otherwise, the default is blank. The default value for
+MISSING_QUANTITATIVE_VALUE is always "-".
+
+To avoid confusion, Mendel now treats the two slash characters, / and \,
+interchangeably. In particular, either slash can now be used to separate
+alleles in an unordered genotype in any input files. If a value is assigned
+to the ALLELE_SEPARATOR keyword, then only that value can be used as the
+unordered separator. Also to avoid confusion, the ORDERED_ALLELE_SEPARATOR
+keyword can no longer be assigned either slash; its default remains the
+vertical bar, |. The keyword AFFECTED now also has two values by default,
+"AFFECTED" and "2", so either value can be used to indicate affected
+individuals. Again, if a value is assigned to the AFFECTED keyword in the
+control file, then only that value will label affecteds. LINKAGE formatted
+pedigree files must continue using a "2" to indicate affecteds. Recall that
+setting the AFFECTED keyword to "everyone" (case insensitive) will
+designate everyone as affected, regardless of the recorded values of the
+AFFECTED_LOCUS_OR_FACTOR.
+
+In the chromosome descriptor field for loci listed in the definition file,
+Mendel now recognizes "XY" and "YX" as designating an autosomal locus.
+Mitochondrial and Y-linked loci are also now recognized, but these loci are
+ignored during analysis. More detail on the changes in Mendel's treatment
+of this field can be found in Table 0.3 in the documentation. Finally, the
+new keyword PEDIGREE_MAX_LINE_LEN takes an integer value that determines
+the maximum line length in comma-separated pedigree files; the default
+value is 262,144 characters. Setting this value much higher slows Mendel's
+initialization phase.
+
+A couple of changes have been made in the minor update to version 8.0.1.
+A new pedigree file can be created under model 1 of the mistyping option.
+In this new file, in each pedigree that a mendelian error is found at a locus,
+all phenotypes at that locus will be left blank in that pedigree. Pedigree
+pretrimming is no longer carried out under model 1 of the mistyping option.
+Finally, a bug was fixed affecting reading of blank or commented-out lines
+in list directed pedigree files. (Thanks to Dr Duffy for catching that bug.)
+
+
+
+
+ New Features in Mendel Version 7.0
+
+In version 7.0 we begin a migration of Mendel toward comma-separated
+input files. Setting the new keyword DEFAULT_LIST_READ equal to true
+in the control file designates all input files as comma-separated.
+This blanket declaration can be overridden for a specific input file
+by the usual file-specific command. Eventually all input files will
+be comma-separated by default rather than column-specific by default.
+Although column-specific files are easier to read, they are painful
+to create. Neither choice is ideal, and users should beware of some
+of the pitfalls with comma-separated files. For example, Fortran treats
+commas, tabs, spaces, and forward slashes (/) as field separators.
+This explains the impossibility of retaining the forward slash as the
+default allele separator in comma-separated files. The backward slash (\)
+is now the default allele separator in this setting rather than our
+earlier favored dash.  Because Excel uses dashes and colons for dates
+and times, many users found the dash to be a poor choice for an allele
+separator. Please keep in mind that, except for file names, neither
+internal spaces, internal tabs, commas, forward slashs, backward slashs,
+exclamation points, vertical bars, ampersands, nor plus signs should
+appear as part of a name in an input file. 
+
+We are also planning to replace the locus and variable files by a
+single definition file that contains both types of information.
+Although Version 7.0 is backward compatible, we recommend adopting
+the definition file in all of your future analyses. For comma-separated
+pedigree files, the new default omits pedigree records. Thus, each
+person record should begin with a pedigree name. This convention can be
+overridden in the control file. The expiration date of version 7.0 and
+future versions will no longer be the end of the calendar year. We have
+instituted a grace period of three months to allow enough time for
+installation of new versions. Proband pedigrees are now allowed in all
+likelihood-based options. Finally, it is now possible to bypass the
+penetrance file and enter simple, uniform penetrance models from the
+control file using the new PENETRANCE keyword. See the end of Section
+0.5.11 in the Documentation for detailed instructions.
+
+
+
+
+ New Features in Mendel Version 6.5
+
+The format of the penetrance file has been completely revamped. Our new
+penetrance files are easier to understand and more flexible. Although old
+penetrance files are now obsolete, we show how to construct acceptable
+substitutes in analysis option 14. The new keyword DEFAULT_PENETRANCE
+is helpful in reducing the size of a penetrance file. Our more flexible
+penetrance format allows us to handle an interesting genetic counseling
+problem in option 7 involving the age of onset of a form of hereditary
+deafness.
+
+Version 6.5 contains numerous other minor adjustments. Most of these are
+internal to Mendel and represent bug fixes and speedups. Other changes are
+visible to the user. For instance, it is now possible to transform a trait
+dichotomy such as affection status into a 0/1 quantitative variable. This
+transformation is necessary in analysis option 14, which operates on
+quantitative traits. In analysis option 18 on combining SNPs, the keyword
+EQUILIBRIUM_FREQUENCIES now determines whether linkage equilibrium haplotype
+frequencies are deposited in the new locus file. Options 11 and 12 now
+generate summary files. The locus file is now slightly easier. When all
+genotypes are compatible with a phenotype, they do not need to be enumerated
+in the locus file. Distances in the map file can now be physical distances,
+genetic distances, or recombination fractions, see the documentation for
+a list of the options and a discussion of how Mendel transforms between them.
+Finally, the keyword AFFECTED can now be assigned the special value Everyone,
+which will designate everyone as affected, regardless of the value for
+AFFECTED_LOCUS_OR_FACTOR.
+
+
+
+
+ New Features in Mendel Version 6.0
+
+The previous analysis option 15 on Gaussian penetrances has been replaced by
+a new option 15 on ethnic admixture. The functionality of the old option 15
+is now included as part of option 14 on penetrance estimation. Option 14
+itself has been upgraded to accommodate generalized linear penetrance models,
+trait censoring, and better ascertainment correction. See the documentation
+for a description of how Mendel handles probands and ascertainment correction.
+To promote computational efficiency, a limited form of pedigree trimming is
+now done automatically as a preprocessing step in most analysis options.
+Mendel's default trimming is sketched in the documentation; more extensive
+trimming is possible using option 21, including splitting pedigrees into their
+constituent nuclear families. In maximum likelihood estimation, it is now
+possible to fix, initialize, and bound parameter values in the control file.
+The documentation discusses the new keywords implementing these commands.
+
+Analysis option 8 on the gamete competition model and analysis option 13 on
+the TDT now permit users to assess transmission distortion by the gender of
+the transmitting parent. In option 8 one can also treat transmission to
+normal children as complementary to transmission to affected children.
+These vague distinctions are made clear in the revised documentation of
+the two options. As alluded to above, option 15 facilitates estimation of
+ethnic admixture. In contrast to competing software, this is done on whole
+pedigree data. The ethnic fractions computed for each individual can be
+output to a new pedigree file for use as trait predictors in other options.
+Options 19 and 20 now allow for X-linked trait contributions.
+Finally, a new command line interface, described in the documentation,
+makes it possible to invoke a different control file at run time than the
+default file Control.in.
+
+
+
+
+ New Features in Mendel Version 5.7
+
+The new keyword DEVIANCE_VARIABLE has been added to allow ordered subset
+analysis with user-specified pedigree ordering; its use and function is
+explained in the documentation. Analysis option 6 on allele frequency
+estimation has been extensively reworked. In model 2 the most likely genotype
+is now given for each ambiguous phenotype. This effectively solves the
+haplotyping problem for a random sample of unrelated people. Consider applying
+model 2 of option 6 to the SNP combination markers output by option 18.
+Depending on the number of populations input, option 6 now evaluates either
+Wright's F_ST statistic for population substructure or Watterson's
+homozygosity test for selection pressure. Option 11 on genetic equilibrium and
+option 12 on cases and controls have been revamped to accept two haplotypes
+per person. Each analysis is clearly labeled by data type - haplotype data,
+multilocus genotype data, or multilocus phenotype data. The data type is
+automatically chosen by Mendel. The current version of Mendel no longer
+supports the old method of inputting haplotypes, which asked the user to
+create one completely homozygous individual for each observed haplotype.
+Option 11 tallies the number of different haplotypes seen in the data and
+provides the p-value of this statistic.
+
+A new analysis option, number 22, has been added to provide a test for
+association given linkage. This option implements, with slight modifications,
+Xiong and Jin's model [71] capturing association and linkage simultaneously
+in pedigree data. In particular, it estimates both recombination and linkage
+disequilibrium parameters and conducts a likelihood ratio test for association
+given linkage.
+
+Several modifications have been made to the use of comma-separated input
+files. For example, trailing commas after the last non-blank value are no
+longer required, and locus and factor names can now be up to 16 characters
+long. Other changes are described in the documentation.
+
+Finally, there were assorted bug fixes. Several of these bugs were reported by
+Sue Service whom we thank!
+
+
+ New Features in Mendel Version 5.5.2
+
+The changes from version 5.5 to version 5.5.2 included bug fixes for issues
+reported by Daniel Weeks and Anne-Louise Leutenegger. Thank you for your help!
+These fixes do not change any results previously obtained from version 5.5,
+they only increase analysis speed and allow Mendel to work on a wider variety
+of data sets, especially larger data sets. Also new in version 5.5.2 is a
+permutation-based p-value estimation technique for the quantitative trait
+association test in option 20.
+
+
+ New Features in Mendel Version 5.5
+
+The Lander-Green-Kruglyak algorithm for likelihood evaluation has been
+completely rewritten to incorporate the innovations described in the
+articles [1,43]. As a consequence, we have added the keyword GENE_FLOW_CUTOFF,
+which directs Mendel to delete descent graphs of low probability. Option 1
+on mapping markers now has two additional models that automate the process of
+ordering a large number of markers. Instead of visiting all possible marker
+orders, Mendel estimates the recombination fraction separating each pair of
+markers and then uses these pairwise estimates to generate a list of promising
+candidate orders. The number of candidate orders retained is dictated by the
+keyword CANDIDATE_ORDERS. We have added to option 2 an example illustrating
+the application of reduced penetrance in mapping a trait locus. Option 3 has
+the capacity to output pedigree files displaying inferred genotypes. When it
+is analyzing only small pedigrees, Option 19 no longer requires precomputation
+of conditional kinship coefficients by SimWalk2. Finally, Mendel now has a new
+option, 21, for trimming irrelevant people from a pedigree and splitting a
+pedigree into its connected components. These actions can dramatically
+accelerate likelihood computation.
+
+[1] Abecasis GR, Cherny SS, Cookson WO, Cardon LR (2001)
+Merlin - rapid analysis of dense genetic maps using sparse gene flow trees.
+Nature Genet 30:97-101
+
+[43] Markianos K, Daly MJ, Kruglyak L (2001)
+Efficient multipoint linkage analysis through reduction in inheritance space.
+Amer J Hum Genet 68:963-977
+
+[71] Xiong M, Jin L (2000) Combined linkage and linkage disequilibrium mapping
+for genome screens. Genet Epidemiology 19:211-234
