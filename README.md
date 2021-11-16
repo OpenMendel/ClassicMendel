@@ -13,7 +13,7 @@ Mendel is a comprehensive package for the statistical analysis of qualitative an
 - Windows: [Mendel-160-win-setup.exe](https://github.com/OpenMendel/ClassicMendel/raw/main/Mendel-160-win-setup.exe)
 
 ## Documentation
-
+[Mendel_16_Doc.pdf](https://github.com/OpenMendel/ClassicMendel/raw/main/Mendel_16_Doc.pdf)
  
 ## Analysis options 
 
