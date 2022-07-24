@@ -51,6 +51,6 @@ QMFG_SCORE                  = 31 (QMFG Score)
 
 ## Citation
 
- FOR PUBLICATION PURPOSES, PLEASE CITE THE OVERALL REFERENCE:
- 
-Lange K, Papp JC, Sinsheimer JS, Sripracha R, Zhou H, Sobel EM. Mendel: the Swiss army knife of genetic analysis programs. Bioinformatics. 2013 Jun 15;29(12):1568-70. doi: 10.1093/bioinformatics/btt187. Epub 2013 Apr 22. PMID: 23610370; PMCID: [PMC3673222](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3673222/).
+For publications please cite the following reference:
+
+*Lange K, Papp JC, Sinsheimer JS, Sripracha R, Zhou H, Sobel EM. Mendel: the Swiss army knife of genetic analysis programs. Bioinformatics. 2013 Jun 15;29(12):1568-70. doi: 10.1093/bioinformatics/btt187. Epub 2013 Apr 22. PMID: 23610370; PMCID: [PMC3673222](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3673222/).*
